@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test_state_management/providers/counter.provider.dart';
 import 'package:flutter_test_state_management/providers/product.provider.dart';
+import 'package:flutter_test_state_management/providers/weather.provider.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -15,6 +16,9 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final count = ref.watch(counterProvider);
     final product = ref.watch(productProvider);
+
+    final AsyncValue<String> weatherProvide = ref.watch(weatherProfider);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
@@ -29,10 +33,30 @@ class MyApp extends ConsumerWidget {
             children: [
               Text('Product name : ${product.name}'),
               Text('Product price : ${product.price}'),
+
+              weatherProvide.when(
+                data: (data) {
+                  return Text(data);
+                },
+                error: (error, stackTrace) {
+                  return ElevatedButton(
+                    onPressed: () => {
+                      ref.refresh(weatherProfider),
+                      //ref.read(productProvider.notifier).changePrice(),
+                    },
+                    child: Text("retry"),
+                  );
+                },
+                loading: () {
+                  return CircularProgressIndicator();
+                },
+              ),
+
               //Text('$count', style: Theme.of(context).textTheme.headlineMedium),
               ElevatedButton(
                 onPressed: () => {
-                  ref.read(productProvider.notifier).changePrice(),
+                  ref.refresh(weatherProfider),
+                  //ref.read(productProvider.notifier).changePrice(),
                 },
                 child: Text("decremment"),
               ),
