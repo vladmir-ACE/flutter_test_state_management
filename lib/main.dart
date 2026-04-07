@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test_state_management/models/post.dart';
 import 'package:flutter_test_state_management/providers/counter.provider.dart';
+import 'package:flutter_test_state_management/providers/post.provider.dart';
 import 'package:flutter_test_state_management/providers/product.provider.dart';
 import 'package:flutter_test_state_management/providers/weather.provider.dart';
 
@@ -19,6 +21,9 @@ class MyApp extends ConsumerWidget {
 
     final AsyncValue<String> weatherProvide = ref.watch(weatherProfider);
 
+    final AsyncValue<List<Post>> postProvide = ref.watch(postProvider);
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
@@ -28,39 +33,63 @@ class MyApp extends ConsumerWidget {
           title: Text("test"),
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              Text('Product name : ${product.name}'),
-              Text('Product price : ${product.price}'),
-
-              weatherProvide.when(
-                data: (data) {
-                  return Text(data);
-                },
-                error: (error, stackTrace) {
-                  return ElevatedButton(
-                    onPressed: () => {
-                      ref.refresh(weatherProfider),
-                      //ref.read(productProvider.notifier).changePrice(),
-                    },
-                    child: Text("retry"),
-                  );
-                },
-                loading: () {
-                  return CircularProgressIndicator();
-                },
-              ),
-
-              //Text('$count', style: Theme.of(context).textTheme.headlineMedium),
-              ElevatedButton(
-                onPressed: () => {
-                  ref.refresh(weatherProfider),
-                  //ref.read(productProvider.notifier).changePrice(),
-                },
-                child: Text("decremment"),
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: .center,
+              children: [
+            
+            
+                Text("Product List "), 
+            
+                postProvide.when(
+                  data:(data){
+                   return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(data[index].title),
+                          subtitle: Text(data[index].description),
+                        );
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return ElevatedButton(
+                      onPressed: () => {
+                        ref.refresh(postProvider),
+                        //ref.read(productProvider.notifier).changePrice(),
+                      },
+                      child: Text("retry"),
+                    );
+                  },
+                  loading: () => CircularProgressIndicator(),
+                ),
+            
+            
+            
+                // weatherProvide.when(
+                //   data: (data) {
+                //     return Text(data);
+                //   },
+                //   error: (error, stackTrace) {
+                //     return ElevatedButton(
+                //       onPressed: () => {
+                //         ref.refresh(weatherProfider),
+                //         //ref.read(productProvider.notifier).changePrice(),
+                //       },
+                //       child: Text("retry"),
+                //     );
+                //   },
+                //   loading: () {
+                //     return CircularProgressIndicator();
+                //   },
+                // ),
+            
+                //Text('$count', style: Theme.of(context).textTheme.headlineMedium),
+                
+              ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
