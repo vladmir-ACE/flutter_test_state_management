@@ -16,4 +16,16 @@ class PostRepository{
       throw Exception('Failed to load posts');
     }
   }
+
+  Future <Post> fetchPostById(int id) async {
+    final response = await http.get(Uri.parse('$_apiUrl/$id'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      return Post(title: data['title'], description: data['body']);
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
 }

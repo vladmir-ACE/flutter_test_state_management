@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test_state_management/models/post.dart';
+import 'package:flutter_test_state_management/page/post_detail.dart';
 import 'package:flutter_test_state_management/providers/counter.provider.dart';
 import 'package:flutter_test_state_management/providers/post.provider.dart';
 import 'package:flutter_test_state_management/providers/product.provider.dart';
@@ -50,6 +51,15 @@ class MyApp extends ConsumerWidget {
                         return ListTile(
                           title: Text(data[index].title),
                           subtitle: Text(data[index].description),
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostDetail(id: index + 1),
+                              ),
+                            );
+                          },
+                          
                         );
                       },
                     );

@@ -7,3 +7,8 @@ final postProvider=FutureProvider<List<Post>>((ref) async {
   final postRepository = PostRepository();
   return  postRepository.fetchPosts();
 });
+
+final postDetailProvider=FutureProvider.family<Post, int>((ref, id) async {
+  final postRepository = PostRepository();
+  return  postRepository.fetchPostById(id);
+});
